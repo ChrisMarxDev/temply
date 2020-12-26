@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:args/command_runner.dart';
+import 'package:interact/interact.dart';
 import 'package:temply/builders/cubit_builder.dart';
 import 'package:temply/builders/cubit_test_builder.dart';
 import 'package:temply/builders/screen_builder.dart';
@@ -11,9 +12,6 @@ import '../util.dart';
 
 class ScreenCommand extends Command {
   static final String forceFlag = 'force';
-  static final String testFlag = 'test';
-  static final String cubitFlag = 'cubit';
-  static final String versionFlag = 'version';
 
   @override
   final name = 'screen';
@@ -23,18 +21,18 @@ class ScreenCommand extends Command {
   ScreenCommand() {
     // [argParser] is automatically created by the parent class.
     argParser
-      ..addFlag(forceFlag, negatable: false, abbr: 'f', help: 'force generate classes, overwriting existing classes')
-      ..addFlag(testFlag, negatable: false, abbr: 't', help: 'generate for tests screen')
-      ..addFlag(cubitFlag, negatable: false, abbr: 'c', help: 'generate for cubits screen');
+      ..addFlag(forceFlag,
+          negatable: false,
+          abbr: 'f',
+          help: 'force generate classes, overwriting existing classes');
   }
 
   // [run] may also return a Future.
   void run() async {
     // [argResults] is set before [run()] is called and contains the options
     // passed to this command.
+
     final force = argResults[forceFlag];
-    final cubit = argResults[cubitFlag];
-    final test = argResults[testFlag];
 
     if (argResults.rest.isEmpty) {
       stdout.write('Please write the name of the classes you want to generate');
@@ -44,29 +42,68 @@ class ScreenCommand extends Command {
     final name = argResults.rest.first;
 
     await checkforDartProject();
-    await generate(name, force: force, cubit: cubit, test: test);
+
+    final answers = await MultiSelect(
+      prompt:
+          'What do you want to generate? Select multiple by navigating with the arrow keys and de-/ selecting with spacebar. Continue with enter',
+      options: ['Cubit', 'Test'],
+      defaults: [true, true], // optional, will be all true by default
+    ).interact();
+
+    final path = Input(
+      prompt: 'path to the generated screen after lib',
+      defaultValue: '/screens', // optional, will provide the user as a hint
+      initialText: '/screens', // optional, will be autofilled in the input
+      validator: (String path) {
+        // optional
+        if (isPath(path)) {
+          return true;
+        } else {
+          exitWithError("please enter a correct path");
+          return false;
+        }
+      },
+    ).interact();
+
+    await generate(name,
+        force: force,
+        cubit: answers.contains(0),
+        test: answers.contains(1),
+        path: path);
   }
 
   Future generate(String name,
-      {bool force = false, bool cubit = false, bool test = false}) async {
+      {bool force = false,
+      bool cubit = false,
+      bool test = false,
+      String path = '/screens'}) async {
     // make sure a name is provided
     if (name.isEmpty) {
       exitWithError('No name provided');
     }
 
+    var projectName = await getProjectName();
+
     var snakeCaseName = camelToSnakeCase(name);
 
-    var screenFile =
-        'lib/screens/${snakeCaseName}_screen/${snakeCaseName}_screen.dart';
-    var cubitFile =
-        'lib/screens/state/${snakeCaseName}_screen/${snakeCaseName}_cubit.dart';
-    var stateFile =
-        'lib/screens/state/${snakeCaseName}_screen/${snakeCaseName}_state.dart';
+    var screensPath = 'lib/${path}/${snakeCaseName}_screen/';
+    var rootTestPath = 'test/${path}/${snakeCaseName}_screen/';
 
-    var screenTestFile =
-        'test/screens/${snakeCaseName}_screen/${snakeCaseName}_screen_test.dart';
-    var cubitTestFile =
-        'test/screens/${snakeCaseName}_screen/${snakeCaseName}_cubit_test.dart';
+    var screenFile = '$screensPath${snakeCaseName}_screen.dart';
+    var cubitFile = '${screensPath}cubit/${snakeCaseName}_cubit.dart';
+    var stateFile = '${screensPath}cubit/${snakeCaseName}_state.dart';
+
+    var screenTestFile = '$rootTestPath${snakeCaseName}_screen_test.dart';
+    var cubitTestFile = '${rootTestPath}cubit/${snakeCaseName}_cubit_test.dart';
+
+    // 'package:APP_NAME/screens/SNAKE_CASE_NAME_screen/SNAKE_CASE_NAME_screen.dart';
+
+    var screenImport =
+        "package:$projectName${screenFile.replaceFirst(RegExp('lib\/'), '')}";
+    var cubitImport =
+        "package:$projectName${cubitFile.replaceFirst(RegExp('lib\/'), '')}";
+
+    // import 'package:temply/lib//screens/cubit/test_screen/test_cubit.dart';
 
     var builders = [
       ScreenBuilder(screenFile, name),
@@ -75,13 +112,16 @@ class ScreenCommand extends Command {
         StateBuilder(stateFile, name)
       ],
       if (test) ...[
-        ScreenTestBuilder(screenTestFile),
+        ScreenTestBuilder(screenTestFile, name,
+            cubitImport: cubitImport, screenImport: screenImport),
       ],
-      if (test && cubit) ...[CubitTestBuilder(cubitTestFile)]
+      if (test && cubit) ...[
+        CubitTestBuilder(cubitTestFile, name, cubitImport: cubitImport)
+      ]
     ];
 
     var canExecute =
-        force || await noFilesExisting(builders.map((e) => e.file));
+        force || await noFilesExisting(builders.map((e) => e.file).toList());
 
     // make sure that no files will be overwritten or force is used
     if (canExecute) {

@@ -24,7 +24,7 @@ void main(List<String> arguments) async {
 
   var argResults = runner.parse(arguments);
   if (argResults[versionFlag] && argResults.command == null) {
-    stdout.write('version 0.0.1');
+    stdout.write(await getProjectVersion());
     exit(0);
   }
 

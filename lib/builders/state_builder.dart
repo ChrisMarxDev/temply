@@ -11,18 +11,14 @@ class StateBuilder extends CodeBuilder {
 
   @override
   String template() {
-    return """part of '${camelToSnakeCase(name)}cubit.dart';
+    return """part of '${camelToSnakeCase(name)}_cubit.dart';
 
 @immutable
 abstract class ${name}State {}
 
 class ${name}Initial extends ${name}State {}
 
-class ${name}Loading extends ${name}State {}
-
 class ${name}Content extends ${name}State {}
-
-class ${name}Error extends ${name}State {}
 """;
   }
 }

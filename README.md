@@ -1,6 +1,9 @@
 # Temply
 Simple cli-app for generating screen directories and widget/ cubit files for a flutter app. This is not a full blown toolset but rather a guideline for people that want to create their own little class generator script to automate the worklfow and reduce having to write boilerplate code.
 
+## Installation
+After cloning and modifications run `pub global activate --source path <path to project>`
+
 ## Usage
 After installation simply use with the prefix of your desired screen name like this `temply Home -c -t` from your projects root to generate the following.
 
