@@ -5,7 +5,7 @@ Simple cli-app for generating screen directories and widget/ cubit files for a f
 After cloning and modifications run `pub global activate --source path <path to project>`
 
 ## Usage
-After installation simply use with the prefix of your desired screen name like this `temply Home -c -t` from your projects root to generate the following.
+After installation simply use with the prefix of your desired screen name like this `temply Home` from your projects root and select what you want to generate. Using all currently available flags leads to generating the following structure if the deafult path is used. The path can also be modified in the cli prompt.
 
 ```
 root

@@ -7,14 +7,11 @@ executables:
 
 environment:
   sdk: '>=2.8.1 <3.0.0'
-  yaml: ^2.2.1
-
 
 dependencies:
   args: ^1.5.0
   interact: ^1.1.0
-
-
+  yaml: ^2.2.1
 
 dev_dependencies:
   pedantic: ^1.9.0
