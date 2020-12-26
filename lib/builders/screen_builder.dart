@@ -1,6 +1,6 @@
 import 'package:temply/builders/builder.dart';
 
-import '../temply.dart';
+import '../util.dart';
 
 class ScreenBuilder extends CodeBuilder {
   final String name;
@@ -17,7 +17,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'state/${camelToSnakeCase(name)}_cubit.dart';
     
-    class ${name}Screen extends StatelessWidget {
+class ${name}Screen extends StatelessWidget {
   static String routeName = '${camelToSnakeCase(name)}';
 
   @override
