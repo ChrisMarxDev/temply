@@ -16,6 +16,7 @@ class ScreenTestBuilder extends CodeBuilder {
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
 ${screenImport != null ? "import '$screenImport';" : ""}
 ${cubitImport != null ? "import '$cubitImport';" : ""}
 
@@ -33,9 +34,9 @@ void main() {
 
     testWidgets('check [${name}Screen] widgets',
         (WidgetTester tester) async {
-      const ${name}Screen screen = ${name}Screen();
+      final screen = ${name}Screen();
 
-      final MaterialApp app = MaterialApp(home: screen);
+      final app = MaterialApp(home: screen);
 
       await tester.pumpWidget(app);
       await tester.pump();

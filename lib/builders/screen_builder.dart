@@ -16,9 +16,18 @@ class ScreenBuilder extends CodeBuilder {
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'cubit/${camelToSnakeCase(name)}_cubit.dart';
-    
+  
+// Add the following to your routes
+// ${name}Screen.routeName: (context) => BlocProvider(
+//     create: (context) => ${name}Cubit),
+//     child: const ${name}Screen()),
+
 class ${name}Screen extends StatelessWidget {
   static String routeName = '${camelToSnakeCase(name)}';
+  
+  const ${name}Screen({
+    Key key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -51,9 +51,9 @@ class ScreenCommand extends Command {
     ).interact();
 
     final path = Input(
-      prompt: 'path to the generated screen after lib',
+      prompt: 'path for the generated files after lib',
       defaultValue: '/screens', // optional, will provide the user as a hint
-      initialText: '/screens', // optional, will be autofilled in the input
+      initialText: '', // optional, will be autofilled in the input
       validator: (String path) {
         // optional
         if (isPath(path)) {
@@ -86,8 +86,8 @@ class ScreenCommand extends Command {
 
     var snakeCaseName = camelToSnakeCase(name);
 
-    var screensPath = 'lib/${path}/${snakeCaseName}_screen/';
-    var rootTestPath = 'test/${path}/${snakeCaseName}_screen/';
+    var screensPath = 'lib${path}/${snakeCaseName}_screen/';
+    var rootTestPath = 'test${path}/${snakeCaseName}_screen/';
 
     var screenFile = '$screensPath${snakeCaseName}_screen.dart';
     var cubitFile = '${screensPath}cubit/${snakeCaseName}_cubit.dart';
