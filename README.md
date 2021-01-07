@@ -26,11 +26,11 @@ root
 Omitting the cubit generation prevents generating `home_cubit.dart`, `home_state.dart` & `home_cubit_test.dart` and ommiting the tests prevents the generation of the test files `home_screen_test.dart` & `home_cubit_test.dart`.
 
 ## Ref
-https://dart.dev/tutorials/server/cmdline
-https://pub.dev/packages/args
-https://medium.com/@m_knabe/create-a-command-line-app-with-dart-8633d3d4a437
-https://itnext.io/building-cli-programs-in-dart-81aaa85caeee
-https://pub.dev/packages/interact
+https://dart.dev/tutorials/server/cmdline  
+https://pub.dev/packages/args  
+https://medium.com/@m_knabe/create-a-command-line-app-with-dart-8633d3d4a437  
+https://itnext.io/building-cli-programs-in-dart-81aaa85caeee  
+https://pub.dev/packages/interact  
 
 A command-line application with an entrypoint in `bin/`, library code
 in `lib/`.
